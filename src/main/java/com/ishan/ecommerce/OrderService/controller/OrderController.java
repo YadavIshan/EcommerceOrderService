@@ -4,6 +4,7 @@ import com.ishan.ecommerce.OrderService.dto.CreateOrderResponseDTO;
 import com.ishan.ecommerce.OrderService.dto.OrderRequestDTO;
 import com.ishan.ecommerce.OrderService.service.IOrderService;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateOrderResponseDTO> createOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<CreateOrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO) {
         CreateOrderResponseDTO response = orderService.createOrder(orderRequestDTO);
         return ResponseEntity.ok(response);
     }

@@ -1,6 +1,7 @@
 package com.ishan.ecommerce.OrderService.mapper;
 
 import com.ishan.ecommerce.OrderService.dto.OrderRequestDTO;
+import com.ishan.ecommerce.OrderService.dto.CreateOrderResponseDTO;
 import com.ishan.ecommerce.OrderService.entity.Order;
 import com.ishan.ecommerce.OrderService.entity.OrderItem;
 import com.ishan.ecommerce.OrderService.enums.OrderStatus;
@@ -28,5 +29,14 @@ public class OrderMapper {
         }
 
         return order;
+    }
+
+    public static CreateOrderResponseDTO mapToCreateOrderResponseDTO(Order order) {
+        return CreateOrderResponseDTO.builder()
+                .orderId(order.getId())
+                .orderNumber(order.getOrderNumber())
+                .orderStatus(order.getOrderStatus())
+                .orderAmount(order.getOrderAmount())
+                .build();
     }
 }

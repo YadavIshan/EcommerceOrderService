@@ -1,6 +1,7 @@
 package com.ishan.ecommerce.OrderService.client;
 
 import com.ishan.ecommerce.OrderService.dto.ProductDTO;
+import com.ishan.ecommerce.OrderService.exception.ProductNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -15,8 +16,13 @@ public class ProductServiceClient {
     }
 
     public ProductDTO getProductById(Long productId) {
-        String url = "https://fakestoreapi.com/products/" + productId; // Using FakeStoreAPI as placeholder , will replace this with my backnd service
+        String url = "https://fakestoreapi.com/products/" + productId;
         ResponseEntity<ProductDTO> response = restTemplate.getForEntity(url, ProductDTO.class);
+        
+        if (response.getBody() == null) {
+            throw new ProductNotFoundException("Product not found with ID: " + productId);
+        }
+        
         return response.getBody();
     }
 

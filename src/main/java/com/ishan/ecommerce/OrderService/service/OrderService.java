@@ -11,6 +11,7 @@ import com.ishan.ecommerce.OrderService.client.ProductServiceClient;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService implements IOrderService {
@@ -24,22 +25,24 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    @Transactional
     public CreateOrderResponseDTO createOrder(OrderRequestDTO orderRequestDTO) {
         Order order = OrderMapper.mapToOrder(orderRequestDTO);
 
+        // Enrich order items with product pricing information
         order.getOrderItems().forEach(currentItem -> {
             ProductDTO productDTO = productServiceClient.getProductById(currentItem.getProductId());
             currentItem.setPrice(productDTO.getPrice());
             currentItem.setTotalAmount(productDTO.getPrice() * currentItem.getQuantity());
         });
         
+        // Calculate total order amount from all items
+        double totalOrderAmount = order.getOrderItems().stream()
+                .mapToDouble(OrderItem::getTotalAmount)
+                .sum();
+        order.setOrderAmount(totalOrderAmount);
+        
         Order savedOrder = orderRepository.save(order);
-
-        return CreateOrderResponseDTO.builder()
-                .orderId(savedOrder.getId())
-                .orderNumber(savedOrder.getOrderNumber())
-                .orderStatus(savedOrder.getOrderStatus())
-                .orderAmount(savedOrder.getOrderAmount())
-                .build();
+        return OrderMapper.mapToCreateOrderResponseDTO(savedOrder);
     }
 }
