@@ -16,13 +16,13 @@ public class ProductServiceClient {
     }
 
     public ProductDTO getProductById(Long productId) {
-        String url = "https://fakestoreapi.com/products/" + productId;
+        String url = "http://ECOMMERCEBACKEND/api/products/" + productId;
         ResponseEntity<ProductDTO> response = restTemplate.getForEntity(url, ProductDTO.class);
-        
+
         if (response.getBody() == null) {
             throw new ProductNotFoundException("Product not found with ID: " + productId);
         }
-        
+
         return response.getBody();
     }
 
