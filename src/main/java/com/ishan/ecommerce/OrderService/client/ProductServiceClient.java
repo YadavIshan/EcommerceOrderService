@@ -16,14 +16,21 @@ public class ProductServiceClient {
     }
 
     public ProductDTO getProductById(Long productId) {
-        String url = "http://ECOMMERCEBACKEND/api/products/" + productId;
-        ResponseEntity<ProductDTO> response = restTemplate.getForEntity(url, ProductDTO.class);
-
-        if (response.getBody() == null) {
-            throw new ProductNotFoundException("Product not found with ID: " + productId);
+        String url = "http://ECOMMERCEBACKEND/api/admin/products/" + productId;
+        System.out.println("DEBUG: Calling URL: " + url);
+        try {
+            ResponseEntity<ProductDTO> response = restTemplate.getForEntity(url, ProductDTO.class);
+            System.out.println("DEBUG: Response Status: " + response.getStatusCode());
+            System.out.println("DEBUG: Response Body: " + response.getBody());
+            if (response.getBody() == null) {
+                return null;
+            }
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error calling Product Service: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
-
-        return response.getBody();
     }
 
 }
